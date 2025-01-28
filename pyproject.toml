@@ -1,0 +1,18 @@
+[project]
+name = "geezlink"
+version = "0.1.0" 
+description = "GeezLink - Enabling seamless semantic retrieval in Amharic"
+authors = [
+    {name = "Abdulmunim",email = "66489217+abdulmunimjemal@users.noreply.github.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas (>=2.2.3,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
