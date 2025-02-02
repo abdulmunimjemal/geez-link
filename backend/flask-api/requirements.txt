@@ -1,0 +1,6 @@
+Flask
+Flask-Redis
+sentence-transformers
+PyPDF2
+faiss-cpu
+openai
