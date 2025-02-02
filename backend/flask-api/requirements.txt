@@ -4,3 +4,4 @@ sentence-transformers
 PyPDF2
 faiss-cpu
 openai
+PyPDF2
