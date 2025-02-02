@@ -26,3 +26,7 @@ def pdf_to_vectors(pdf_file):
     embeddings = model.encode(chunks)  # Shape: (num_chunks, 768)
 
     return embeddings
+
+with open("example.pdf", "rb") as pdf_file:
+    vectors = pdf_to_vectors(pdf_file)
+    print(f"Generated {len(vectors)} embedding vectors with shape {vectors.shape}.")
