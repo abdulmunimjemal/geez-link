@@ -20,14 +20,19 @@ type chatHistory ={
 export function useChatSession (){
 
     const [chatHistory,setChatHistory] = useState<chatHistory | null>(null);
+    const [isMounted, setIsMounted] = useState(false);
 
 
+    useEffect(() => {
+        setIsMounted(true);
+      }, []);
+    
     useEffect(() =>{
-
+        if (!isMounted) return;
         const savedHistory = localStorage.getItem('chatHistory');
 
         setChatHistory(savedHistory ? JSON.parse(savedHistory): null);
-    },[]);
+    },[isMounted]);
 
 
     const saveChatHistory = (history:chatHistory)=>{
