@@ -38,6 +38,67 @@ export default function ChatPage() { // Changed component name
     reader.readAsDataURL(file);
   };
 
+  const onSendMessage = async (message)=>{
+
+    const newHistory = {
+      ...chatHistory,
+      messages: [...chatHistory.messages, {
+        content: message,
+        owner:"user"
+      }]
+    };
+    const history_temp= chatHistory;
+    saveChatHistory(newHistory);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method:"POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ history:history_temp,newMessage:message }),
+      });
+
+      if (!response.ok) throw new Error('API request failed');
+
+      const data = await response.json();
+  
+      // Add model response
+      const modelMessageHistory = {
+        ...newHistory,
+        messages: [
+          ...newHistory.messages,
+          {
+            content: data.response, // Adjust based on your API response 
+            owner: "model",
+          }
+        ]
+      };
+      saveChatHistory(modelMessageHistory);
+      } catch(error){
+
+        console.error('Error sending message:', error);
+    // Add error message
+    const errorMessageHistory = {
+      ...newHistory,
+      messages: [
+        ...newHistory.messages,
+        {
+          content: "Sorry, I couldn't process your request",
+          owner: "model",
+        }
+      ]
+    };
+    saveChatHistory(errorMessageHistory);
+      }
+
+      
+    
+    }
+  
+
+
+    
   if (!isMounted) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -51,15 +112,7 @@ export default function ChatPage() { // Changed component name
       {chatHistory?.file ? (
         <ChatInterface
           history={chatHistory}
-          onSendMessage={(message) => {
-            const newHistory = {
-              ...chatHistory,
-              messages: [...chatHistory.messages, {
-                content: message,
-              }]
-            };
-            saveChatHistory(newHistory);
-          }}
+          onSendMessage={onSendMessage}
           onClearHistory={() => {
             clearChatHistory();
             router.push('/welcome');
