@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { PaperAirplaneIcon, TrashIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { useChatSession } from '../hooks/useChatSession';
 
 export default function ChatInterface({
   history,
@@ -15,6 +16,8 @@ export default function ChatInterface({
   const [inputMessage, setInputMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { sessionId } = useChatSession();
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,12 +41,26 @@ export default function ChatInterface({
     }
   };
 
-  const handleClearSession = async ()=>{
-    // send a request to the backend to clear the session
-    // http://localhost:8000/api/sessions/f642853b-9f2d-42ad-bd22-f8119dc35edc
-    // by getting the session id from the usechatSessionHook 
-    // calls OnclearSessionMethod from the parent 
-  }
+  const handleClearSession = async () => {
+    try {
+      if (sessionId?.id) {
+        const response = await fetch(
+          `http://localhost:8000/api/sessions/${sessionId.id}`,
+          { method: 'DELETE' }
+        );
+        
+        if (!response.ok) {
+          throw new Error('Failed to clear session on server');
+        }
+      }
+    } catch (error) {
+      alert(`Error clearing session:${error}`);
+      // Optionally show error to user here
+    } finally {
+      onClearHistory(); // Clear local session and navigate
+    }
+  };
+
 
 
   return (
