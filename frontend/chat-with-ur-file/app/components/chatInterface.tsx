@@ -43,7 +43,7 @@ export default function ChatInterface({
     <div className="header px-10 pb-10 pt-10 flex flex-col">
     <h1 className="text-[#3369FF] text-4xl self-start">GeezLink</h1>
     <hr ></hr>
-    <div className="flex flex-col h-screen max-w-3xl mx-auto">
+    <div className="flex flex-col h-screen max-w-screen-lg min-w-md mx-auto">
 
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
@@ -54,11 +54,12 @@ export default function ChatInterface({
             <p className="text-sm text-gray-500">{history.file.type.split('/')[1].toUpperCase()}</p>
           </div>
         </div>
+
         <button
           onClick={onClearHistory}
-          className="flex items-center text-red-600 hover:text-red-700 text-sm"
+          className="flex items-center text-red-600 hover:text-red-700 text-sm px-5"
         >
-          <TrashIcon className="h-5 w-5 mr-1" />
+          <TrashIcon className="h-5 w-5 mx-1" />
           Clear History
         </button>
       </div>

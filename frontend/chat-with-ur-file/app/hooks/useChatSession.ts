@@ -16,11 +16,16 @@ type chatHistory ={
     messages:chatMessage[];
 }
 
+type sessionId = {
+    id:string
+}
+
 
 export function useChatSession (){
 
     const [chatHistory,setChatHistory] = useState<chatHistory | null>(null);
     const [isMounted, setIsMounted] = useState(false);
+    const [sessionId, setSessionId] = useState<sessionId | null>(null)
 
 
     useEffect(() => {
@@ -45,9 +50,21 @@ export function useChatSession (){
         setChatHistory(null)
     };
 
+    const saveSession = (session:sessionId)=>{
+        localStorage.setItem('geezLink-sessionId',session.id)
+        setSessionId(session)
+    }
+
+    const deleteSession = () =>{
+        localStorage.removeItem('geezLink-sessionId')
+    }
+
     return {
         chatHistory,
         saveChatHistory,
         clearChatHistory,
+        deleteSession,
+        saveSession,
+        sessionId,
     }
 }
