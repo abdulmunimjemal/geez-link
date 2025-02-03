@@ -32,9 +32,9 @@ export default function ChatInterface({
     e.preventDefault();
     if (inputMessage.trim()) {
       setIsLoading(true);
+      setInputMessage('');
       try {
         await onSendMessage(inputMessage);
-        setInputMessage('');
       } finally {
         setIsLoading(false);
       }
@@ -67,11 +67,11 @@ export default function ChatInterface({
 
 
   return (
-    <div className="flex flex-col justify-between">
-    <div className="header px-10 pb-10 pt-10 flex flex-col">
+    <div className="flex flex-col justify-between h-screen">
+    <div className="header px-10 pb-10 pt-10 flex flex-col h-full">
     <h1 className="text-[#3369FF] text-4xl self-start">GeezLink</h1>
     <hr ></hr>
-    <div className="flex flex-col h-screen max-w-screen-lg min-w-md mx-auto lg:mx-80 ">
+    <div className="flex flex-col h-[calc(100%-15px)] md:h-[calc(100%-30px)] max-w-screen-lg min-w-md mx-auto lg:mx-80 ">
 
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
