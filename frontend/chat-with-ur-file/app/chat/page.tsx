@@ -86,7 +86,7 @@ export default function ChatPage() { // Changed component name
             ...userMessageHistory,
             messages: [
               ...userMessageHistory.messages,
-              { content: data.response, owner: "model" }
+              { content: data.answer, owner: "model" }
             ]
           };
           saveChatHistory(modelMessageHistory);

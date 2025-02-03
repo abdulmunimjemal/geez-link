@@ -6,7 +6,7 @@ import { useChatSession } from "./hooks/useChatSession";
 
 export default function Home() {
   const router = useRouter();
-  const { chatHistory } = useChatSession();
+  const { chatHistory,sessionId } = useChatSession();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -17,9 +17,9 @@ export default function Home() {
     if (!isMounted) return;
     
     // Use absolute paths for routing
-    const path = chatHistory ? '/chat' : '/welcome';
+    const path = sessionId?.id ? '/chat' : '/welcome';
     router.push(path);
-  }, [chatHistory, router, isMounted]);
+  }, [sessionId, router, isMounted]);
 
   // Show consistent loading state during initial mount
   if (!isMounted) {

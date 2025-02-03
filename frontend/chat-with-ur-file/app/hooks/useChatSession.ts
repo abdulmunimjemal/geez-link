@@ -4,6 +4,7 @@ import { useEffect,useState } from "react";
 
 type chatMessage = {
     content:string;
+    owner?:string;
 }
 
 type chatHistory ={
@@ -30,41 +31,65 @@ export function useChatSession (){
 
     useEffect(() => {
         setIsMounted(true);
-      }, []);
-    
-    useEffect(() =>{
-        if (!isMounted) return;
+        const savedSession = localStorage.getItem('geezLink-sessionId');
         const savedHistory = localStorage.getItem('chatHistory');
 
-        setChatHistory(savedHistory ? JSON.parse(savedHistory): null);
-    },[isMounted]);
+        if (savedSession) {
+            setSessionId({ id: savedSession });
+        }
+        if (savedHistory) {
+            setChatHistory(JSON.parse(savedHistory));
+        }
+    }, []);
 
 
-    const saveChatHistory = (history:chatHistory)=>{
-        localStorage.setItem('chatHistory',JSON.stringify(history))
+    useEffect(() => {
+        if (!isMounted) return;
+        
+        if (sessionId) {
+            localStorage.setItem('geezLink-sessionId', sessionId.id);
+        } else {
+            localStorage.removeItem('geezLink-sessionId');
+        }
+    }, [sessionId, isMounted]);
+
+
+
+    
+    useEffect(() => {
+        if (!isMounted) return;
+        
+        if (chatHistory) {
+            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+        } else {
+            localStorage.removeItem('chatHistory');
+        }
+    }, [chatHistory, isMounted]);
+
+
+    const saveChatHistory = (history: chatHistory) => {
         setChatHistory(history);
     };
 
-    const clearChatHistory = () =>{
-        localStorage.removeItem('chatHistory');
-        setChatHistory(null)
+    const clearChatHistory = () => {
+        setChatHistory(null);
     };
 
-    const saveSession = (session:sessionId)=>{
-        localStorage.setItem('geezLink-sessionId',session.id)
-        setSessionId(session)
-    }
+    const saveSession = (session: sessionId) => {
+        setSessionId(session);
+    };
 
-    const deleteSession = () =>{
-        localStorage.removeItem('geezLink-sessionId')
-    }
+    const deleteSession = () => {
+        setSessionId(null);
+    };
 
     return {
         chatHistory,
+        sessionId,
         saveChatHistory,
         clearChatHistory,
-        deleteSession,
         saveSession,
-        sessionId,
-    }
+        deleteSession,
+        isMounted
+    };
 }
