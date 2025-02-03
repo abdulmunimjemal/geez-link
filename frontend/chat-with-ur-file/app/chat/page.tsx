@@ -9,7 +9,7 @@ import ChatInterface from "../components/chatInterface";
 
 export default function ChatPage() { // Changed component name
   const router = useRouter();
-  const { chatHistory, saveChatHistory, clearChatHistory } = useChatSession();
+  const { chatHistory, saveChatHistory, clearChatHistory,sessionId } = useChatSession();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -40,57 +40,68 @@ export default function ChatPage() { // Changed component name
 
   const onSendMessage = async (message)=>{
 
-    const newHistory = {
-      ...chatHistory,
-      messages: [...chatHistory.messages, {
-        content: message,
-        owner:"user"
-      }]
-    };
-    const history_temp= chatHistory;
-    saveChatHistory(newHistory);
 
-    try {
-      const response = await fetch('/api/chat', {
-        method:"POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ history:history_temp,newMessage:message }),
-      });
-
-      if (!response.ok) throw new Error('API request failed');
-
-      const data = await response.json();
-  
-      // Add model response
-      const modelMessageHistory = {
-        ...newHistory,
+    if (!sessionId?.id) {
+      const errorHistory = {
+        ...chatHistory,
         messages: [
-          ...newHistory.messages,
-          {
-            content: data.response, // Adjust based on your API response 
-            owner: "model",
-          }
+          ...chatHistory.messages,
+          { content: message, owner: "user" },
+          { content: "Session expired. Please start a new chat.", owner: "model" }
         ]
       };
-      saveChatHistory(modelMessageHistory);
-      } catch(error){
+      saveChatHistory(errorHistory);
+      return;
+    }
 
-        console.error('Error sending message:', error);
-    // Add error message
-    const errorMessageHistory = {
-      ...newHistory,
-      messages: [
-        ...newHistory.messages,
-        {
-          content: "Sorry, I couldn't process your request",
-          owner: "model",
+        // Add user message immediately
+        const userMessageHistory = {
+          ...chatHistory,
+          messages: [
+            ...chatHistory.messages, 
+            { content: message, owner: "user" }
+          ]
+        };
+        saveChatHistory(userMessageHistory);
+
+
+        try {
+          const encodedQuestion = encodeURIComponent(message);
+          const response = await fetch(
+            `http://localhost:8000/api/chat?session_id=${sessionId.id}&question=${encodedQuestion}`,
+            { method: 'POST',
+              headers: {
+                "Content-Type": "application/json",
+              }, 
+
+            }
+          );
+    
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    
+          const data = await response.json();
+    
+          // Add model response
+          const modelMessageHistory = {
+            ...userMessageHistory,
+            messages: [
+              ...userMessageHistory.messages,
+              { content: data.response, owner: "model" }
+            ]
+          };
+          saveChatHistory(modelMessageHistory);
+    
+        } catch (error) {
+          console.error('API Error:', error);
+          const errorMessageHistory = {
+            ...userMessageHistory,
+            messages: [
+              ...userMessageHistory.messages,
+              { content: "Sorry, there was an error processing your request", owner: "model" }
+            ]
+          };
+          saveChatHistory(errorMessageHistory);
         }
-      ]
-    };
-    saveChatHistory(errorMessageHistory);
-      }
 
       
     

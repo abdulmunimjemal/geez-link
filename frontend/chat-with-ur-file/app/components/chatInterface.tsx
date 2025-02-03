@@ -25,6 +25,7 @@ export default function ChatInterface({
   }, [history.messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
     if (inputMessage.trim()) {
       setIsLoading(true);
@@ -36,6 +37,13 @@ export default function ChatInterface({
       }
     }
   };
+
+  const handleClearSession = async ()=>{
+    // send a request to the backend to clear the session
+    // http://localhost:8000/api/sessions/f642853b-9f2d-42ad-bd22-f8119dc35edc
+    // by getting the session id from the usechatSessionHook 
+    // calls OnclearSessionMethod from the parent 
+  }
 
 
   return (
@@ -56,7 +64,7 @@ export default function ChatInterface({
         </div>
 
         <button
-          onClick={onClearHistory}
+          onClick={handleClearSession}
           className="flex items-center text-red-600 hover:text-red-700 text-sm px-5"
         >
           <TrashIcon className="h-5 w-5 mx-1" />
