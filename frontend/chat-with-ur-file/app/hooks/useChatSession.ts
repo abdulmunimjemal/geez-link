@@ -72,6 +72,7 @@ export function useChatSession (){
     };
 
     const clearChatHistory = () => {
+        localStorage.removeItem('chatHistory');
         setChatHistory(null);
     };
 
@@ -80,6 +81,7 @@ export function useChatSession (){
     };
 
     const deleteSession = () => {
+        localStorage.removeItem('geezLink-sessionId');
         setSessionId(null);
     };
 

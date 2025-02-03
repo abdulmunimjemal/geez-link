@@ -16,7 +16,7 @@ export default function ChatInterface({
   const [inputMessage, setInputMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { sessionId } = useChatSession();
+  const { sessionId,deleteSession } = useChatSession();
 
 
   const scrollToBottom = () => {
@@ -57,7 +57,10 @@ export default function ChatInterface({
       alert(`Error clearing session:${error}`);
       // Optionally show error to user here
     } finally {
+      
       onClearHistory(); // Clear local session and navigate
+      deleteSession();
+      alert("Successfully deleted session and file")
     }
   };
 
@@ -68,7 +71,7 @@ export default function ChatInterface({
     <div className="header px-10 pb-10 pt-10 flex flex-col">
     <h1 className="text-[#3369FF] text-4xl self-start">GeezLink</h1>
     <hr ></hr>
-    <div className="flex flex-col h-screen max-w-screen-lg min-w-md mx-auto">
+    <div className="flex flex-col h-screen max-w-screen-lg min-w-md mx-auto lg:mx-80 ">
 
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
@@ -99,8 +102,8 @@ export default function ChatInterface({
             <div
               className={`max-w-4xl p-4  ${
                 message.owner === 'user'
-                  ? 'bg-blue-600 text-white rounded-tl-[1vw] rounded-bl-[1vw]  rounded-br-lg'
-                  : 'bg-gray-100 text-gray-900 border rounded-tl-[1vw] rounded-tr-[1vw]  rounded-br-lg border-gray-200'
+                  ? 'bg-blue-600 text-white rounded-tl-[1vw] rounded-bl-[1vw]  rounded-br-lg ml-6 md:ml-10'
+                  : 'bg-gray-100 text-gray-900 border rounded-tl-[1vw] rounded-tr-[1vw]  rounded-br-lg border-gray-200 mr-6 md:mr-10'
               }`}
             >
               <p className="break-words">{message.content}</p>
